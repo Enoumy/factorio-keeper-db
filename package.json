@@ -1,0 +1,11 @@
+{
+  "name": "factorio-keeper-db",
+  "version": "1.0.0",
+  "description": "HTTP server backend for Factorio Blueprint Keeper",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "enoumy",
+  "license": "ISC"
+}
