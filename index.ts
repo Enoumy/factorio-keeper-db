@@ -1,5 +1,7 @@
 const express = require("express");
+const sqlite3 = require("sqlite3").verbose();
 const app = express();
+let db = new sqlite3.Database("test.db");
 
 const dummy_data = [
   137,
@@ -132,6 +134,25 @@ app.get("/abcd", function(req, res) {
   }
 
   res.end(buffer, "binary");
+});
+
+app.get("/image/:image_id", (req, res) => {
+  let img = req.params["image_id"];
+  db.serialize(() => {
+    db.get(
+      "SELECT * FROM BlueprintImages WHERE image_id=?;",
+      [img],
+      (err, row) => {
+        if (err || row == null || Object.keys(row).length === 0)
+          res.end("Image " + img + " not found!");
+        else {
+          res.contentType(row["content_type"]);
+          res.end(row["image_blob"], "binary");
+        }
+      }
+    );
+  });
+  res.end("Image " + img + " not found!");
 });
 
 app.listen(3000);
