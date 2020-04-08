@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "tsc index.ts && node index.js",
-    "init_db": "tsc init_db.ts && node init_db.js",
+    "init-db": "tsc init_db.ts && node init_db.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "enoumy",
