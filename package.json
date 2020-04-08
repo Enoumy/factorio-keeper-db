@@ -4,8 +4,15 @@
   "description": "HTTP server backend for Factorio Blueprint Keeper",
   "main": "index.js",
   "scripts": {
+    "start": "tsc index.ts && node index.js",
+    "init_db": "tsc init_db.ts && node init_db.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "enoumy",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^13.11.0",
+    "express": "^4.17.1",
+    "sqlite3": "^4.1.1"
+  }
 }
