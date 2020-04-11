@@ -10,7 +10,6 @@ function executeCommands(db_file: string, sql_file: string): void {
     db.run("BEGIN TRANSACTION;");
 
     for (let i = 0; i < commands.length; i++) {
-      console.log(commands[i] + ";");
       db.run(commands[i] + ";", err => {
         if (err) console.log(err);
       });

@@ -152,7 +152,6 @@ app.get("/image/:image_id", (req, res) => {
       }
     );
   });
-  res.end("Image " + img + " not found!");
 });
 
 app.listen(3000);

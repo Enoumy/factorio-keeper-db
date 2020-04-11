@@ -2,7 +2,6 @@ const fs = require("fs");
 const sqlite3 = require("sqlite3").verbose();
 
 let buffer = fs.readFileSync("./test-images/baby-yoda.jpg");
-console.log(buffer);
 
 let db = new sqlite3.Database("test.db");
 

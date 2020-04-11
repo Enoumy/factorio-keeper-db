@@ -7,6 +7,8 @@
     "start": "tsc index.ts && node index.js",
     "init-db": "tsc init-db.ts && node init-db.js",
     "populate-db": "tsc write-start-data.ts && node write-start-data.js",
+    "load-image-1": "tsc image-reading.ts && node image-reading.js",
+    "boot-db": "npm run-script init-db && npm run-script populate-db && npm run-script load-image-1",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "enoumy",
