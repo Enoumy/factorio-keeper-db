@@ -1,5 +1,44 @@
-import AppDao from "./dao";
+import BlueprintDao from "./dao/blueprint-dao";
 
-let dao = new AppDao("test.db");
+const db_file = "test.db";
 
-console.log("End of transmission. Don't panic!");
+async function findMax() {
+  let blueprint_dao = new BlueprintDao();
+  try {
+    await blueprint_dao.open(db_file);
+    console.log(await blueprint_dao.findMaxID());
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function findImages() {
+  let blueprint_dao = new BlueprintDao();
+  try {
+    await blueprint_dao.open(db_file);
+    let images = await blueprint_dao.getBlueprintImages(1);
+    console.log(images);
+  } catch (err) {
+    console.log("Error finding images: " + err);
+  }
+}
+
+async function findData() {
+  let blueprint_dao = new BlueprintDao();
+  try {
+    await blueprint_dao.open(db_file);
+    let data = await blueprint_dao.getBlueprintData(1);
+    console.log(data);
+  } catch (err) {
+    console.log("Error finding data: " + err);
+  }
+}
+
+async function main() {
+  await findMax();
+  await findImages();
+  await findData();
+  console.log("End of transmission. Don't panic!");
+}
+
+main();

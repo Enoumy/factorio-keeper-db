@@ -5,9 +5,9 @@ export default class AppDao {
 
   constructor() {}
 
-  open(filename) {
+  open(filename: string) {
     return new Promise((resolve, reject) => {
-      this.db = sqlite3.Database(filename, err => {
+      this.db = new sqlite3.Database(filename, err => {
         if (err) {
           console.log("Error opening database: " + filename);
           console.log(err);
@@ -49,7 +49,7 @@ export default class AppDao {
 
   all(sql: string, params: any[] = []) {
     return new Promise((resolve, reject) => {
-      this.db.get(sql, params, (err, rows) => {
+      this.db.all(sql, params, (err, rows) => {
         if (err) {
           console.log("Error running sql " + sql);
           console.log(err);
@@ -58,6 +58,14 @@ export default class AppDao {
           resolve(rows);
         }
       });
+    });
+  }
+
+  transaction(commands) {
+    this.db.serialize(() => {
+      this.db.run("BEGIN TRANSACTION;");
+      commands();
+      this.db.run("COMMIT;");
     });
   }
 }
