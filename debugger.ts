@@ -23,7 +23,7 @@ async function findImages() {
   }
 }
 
-async function findData() {
+async function findBlueprintData() {
   let blueprint_dao = new BlueprintDao();
   try {
     await blueprint_dao.open(db_file);
@@ -34,10 +34,22 @@ async function findData() {
   }
 }
 
+async function findBlueprintMetaData() {
+  let blueprint_dao = new BlueprintDao();
+  try {
+    await blueprint_dao.open(db_file);
+    let data = await blueprint_dao.getBlueprintMetaData(1);
+    console.log(data);
+  } catch (err) {
+    console.log("Error finding data: " + err);
+  }
+}
+
 async function main() {
   await findMax();
   await findImages();
-  await findData();
+  await findBlueprintData();
+  await findBlueprintMetaData();
   console.log("End of transmission. Don't panic!");
 }
 

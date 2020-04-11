@@ -1,150 +1,54 @@
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
+import BlueprintDao from "./dao/blueprint-dao";
+
+const db_file = "test.db";
+
 const app = express();
 let db = new sqlite3.Database("test.db");
 
-const dummy_data = [
-  137,
-  80,
-  78,
-  71,
-  13,
-  10,
-  26,
-  10,
-  0,
-  0,
-  0,
-  13,
-  73,
-  72,
-  68,
-  82,
-  0,
-  0,
-  0,
-  8,
-  0,
-  0,
-  0,
-  8,
-  8,
-  6,
-  0,
-  0,
-  0,
-  196,
-  15,
-  190,
-  139,
-  0,
-  0,
-  0,
-  59,
-  73,
-  68,
-  65,
-  84,
-  24,
-  149,
-  157,
-  141,
-  193,
-  14,
-  0,
-  32,
-  8,
-  66,
-  161,
-  255,
-  255,
-  103,
-  90,
-  152,
-  205,
-  131,
-  171,
-  45,
-  46,
-  79,
-  133,
-  33,
-  36,
-  9,
-  48,
-  90,
-  226,
-  102,
-  154,
-  175,
-  6,
-  238,
-  5,
-  36,
-  215,
-  96,
-  166,
-  156,
-  41,
-  191,
-  254,
-  26,
-  28,
-  56,
-  151,
-  162,
-  12,
-  143,
-  104,
-  234,
-  77,
-  73,
-  152,
-  23,
-  74,
-  109,
-  170,
-  125,
-  62,
-  72,
-  165,
-  0,
-  0,
-  0,
-  0,
-  73,
-  69,
-  78,
-  68,
-  174,
-  66,
-  96,
-  130
-];
-
 app.get("/", function(req, res) {
-  res.send("Hello World");
+  res.send("Factorio Keeper Backend server");
 });
 
-app.get("/abcd", function(req, res) {
-  res.contentType("image/png");
-  let buffer = new Buffer(dummy_data.length);
-  for (var i = 0; i < buffer.length; i++) {
-    buffer[i] = dummy_data[i];
+app.get("/blueprint/:blueprint_id", async (req, res, next) => {
+  const blueprint_id = req.params["blueprint_id"];
+  let data: Object = {};
+  let blueprint_dao = new BlueprintDao();
+  try {
+    await blueprint_dao.open(db_file);
+    data = await blueprint_dao.getBlueprintData(blueprint_id);
+    data["images"] = await blueprint_dao.getBlueprintImages(blueprint_id);
+  } catch (err) {
+    next("Not found");
   }
-
-  res.end(buffer, "binary");
+  res.contentType("application/json");
+  res.end(JSON.stringify(data));
 });
 
-app.get("/image/:image_id", (req, res) => {
+app.get("/blueprint/:blueprint_id/summary", async (req, res, next) => {
+  const blueprint_id = req.params["blueprint_id"];
+  let data: Object = {};
+  let blueprint_dao = new BlueprintDao();
+  try {
+    await blueprint_dao.open(db_file);
+    data = await blueprint_dao.getBlueprintMetaData(blueprint_id);
+    data["images"] = await blueprint_dao.getBlueprintImages(blueprint_id);
+  } catch (err) {
+    next("Not found");
+  }
+  res.contentType("application/json");
+  res.end(JSON.stringify(data));
+});
+
+app.get("/image/:image_id", (req, res, next) => {
   let img = req.params["image_id"];
   db.serialize(() => {
     db.get(
       "SELECT * FROM BlueprintImages WHERE image_id=?;",
       [img],
       (err, row) => {
-        if (err || row == null || Object.keys(row).length === 0)
-          res.end("Image " + img + " not found!");
+        if (err || row == null || Object.keys(row).length === 0) next();
         else {
           res.contentType(row["content_type"]);
           res.end(row["image_blob"], "binary");
@@ -152,6 +56,11 @@ app.get("/image/:image_id", (req, res) => {
       }
     );
   });
+});
+
+app.use(function(err, req, res, next) {
+  console.error(err.stack);
+  res.status(404).send("Not found!");
 });
 
 app.listen(3000);
