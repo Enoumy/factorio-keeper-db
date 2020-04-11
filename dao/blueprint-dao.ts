@@ -1,7 +1,4 @@
-const sqlite3 = require("sqlite3").verbose();
 import AppDao from "./dao";
-
-const db_file = "test.db";
 
 export default class BlueprintDao {
   dao: AppDao;

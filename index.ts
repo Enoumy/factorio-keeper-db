@@ -1,11 +1,9 @@
 const express = require("express");
-const sqlite3 = require("sqlite3").verbose();
+const app = express();
 import BlueprintDao from "./dao/blueprint-dao";
+import ImageDao from "./dao/image-dao";
 
 const db_file = "test.db";
-
-const app = express();
-let db = new sqlite3.Database("test.db");
 
 app.get("/", function(req, res) {
   res.send("Factorio Keeper Backend server");
@@ -41,21 +39,22 @@ app.get("/blueprint/:blueprint_id/summary", async (req, res, next) => {
   res.end(JSON.stringify(data));
 });
 
-app.get("/image/:image_id", (req, res, next) => {
-  let img = req.params["image_id"];
-  db.serialize(() => {
-    db.get(
-      "SELECT * FROM BlueprintImages WHERE image_id=?;",
-      [img],
-      (err, row) => {
-        if (err || row == null || Object.keys(row).length === 0) next();
-        else {
-          res.contentType(row["content_type"]);
-          res.end(row["image_blob"], "binary");
-        }
-      }
-    );
-  });
+app.get("/image/:image_id", async (req, res, next) => {
+  let image_id = req.params["image_id"];
+  let result: any;
+
+  let image_dao = new ImageDao();
+  try {
+    await image_dao.open(db_file);
+    result = await image_dao.getImage(image_id);
+  } catch (error) {
+    next();
+  }
+
+  if (result == null || Object.keys(result).length === 0) next();
+
+  res.contentType(result["content_type"]);
+  res.end(result["image_blob"], "binary");
 });
 
 app.use(function(err, req, res, next) {
@@ -63,6 +62,7 @@ app.use(function(err, req, res, next) {
   res.status(404).send("Not found!");
 });
 
-app.listen(3000);
-
-console.log("End of transmission. Don't panic!");
+let server = app.listen(3000, () => {
+  let address = server.address();
+  console.log("Server is up and running at: http://localhost:" + address.port);
+});
