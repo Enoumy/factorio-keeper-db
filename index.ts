@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 import BlueprintDao from "./dao/blueprint-dao";
 import ImageDao from "./dao/image-dao";
+import UserDao from "./dao/user-dao";
 
 const db_file = "test.db";
 
@@ -55,6 +56,23 @@ app.get("/image/:image_id", async (req, res, next) => {
 
   res.contentType(result["content_type"]);
   res.end(result["image_blob"], "binary");
+});
+
+app.get("/user/:username", async (req, res, next) => {
+  let username = req.params["username"];
+  let data: any;
+
+  let user_dao = new UserDao();
+  try {
+    await user_dao.open(db_file);
+    data = await user_dao.getUserData(username);
+    data["blueprints"] = await user_dao.getUserBlueprints(username);
+  } catch (error) {
+    next();
+  }
+
+  res.contentType("application/json");
+  res.end(JSON.stringify(data));
 });
 
 app.use(function(err, req, res, next) {

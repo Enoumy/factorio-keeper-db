@@ -45,6 +45,26 @@ export default class UserDao {
       this.dao
         .get(
           `
+        SELECT username, created_date
+        FROM   users
+        WHERE  username = ?;
+        `,
+          [username]
+        )
+        .then(value => {
+          resolve(value);
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  getUserDataWithPin(username: string) {
+    return new Promise((resolve, reject) => {
+      this.dao
+        .get(
+          `
         SELECT *
         FROM   users
         WHERE  username = ?;
