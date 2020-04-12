@@ -3,10 +3,11 @@ import AppDao from "./dao";
 export default class ImageDao {
   dao: AppDao;
 
-  constructor() {}
+  constructor() {
+    this.dao = new AppDao();
+  }
 
   open(filename: string) {
-    this.dao = new AppDao();
     return this.dao.open(filename);
   }
 
