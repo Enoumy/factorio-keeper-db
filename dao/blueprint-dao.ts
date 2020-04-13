@@ -93,4 +93,43 @@ export default class BlueprintDao {
         });
     });
   }
+
+  writeBlueprint(
+    blueprint_id: number,
+    blueprint_string: string,
+    title: string
+  ) {
+    return this.dao.run(
+      `
+      INSERT INTO blueprints
+                  (b_id,
+                   blueprint_string,
+                   title)
+      VALUES      (?,
+                   ?,
+                   ?); `,
+      [blueprint_id, blueprint_string, title]
+    );
+  }
+
+  writeBlueprintMetadata(
+    blueprint_id: number,
+    created_by: string,
+    description: string
+  ) {
+    return this.dao.run(
+      `
+      INSERT INTO blueprintmetadata
+                  (created_date,
+                   description,
+                   b_id,
+                   created_by)
+      VALUES      (Date('now'),
+                   ?,
+                   ?,
+                   ?);
+      `,
+      [description, blueprint_id, created_by]
+    );
+  }
 }

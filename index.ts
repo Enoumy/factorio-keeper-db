@@ -1,5 +1,11 @@
 const express = require("express");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express();
+app.use(bodyParser.json({ limit: "50mb", extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
+
 import BlueprintDao from "./dao/blueprint-dao";
 import ImageDao from "./dao/image-dao";
 import UserDao from "./dao/user-dao";
@@ -73,6 +79,14 @@ app.get("/user/:username", async (req, res, next) => {
 
   res.contentType("application/json");
   res.end(JSON.stringify(data));
+});
+
+app.post("/upload", (req, res) => {
+  console.log(req.body);
+  for (let key in req.body.images) {
+    console.log(req.body.images[key]["buffer"]);
+  }
+  res.send("Received your request!");
 });
 
 app.use(function(err, req, res, next) {

@@ -79,4 +79,28 @@ export default class UserDao {
         });
     });
   }
+
+  writeUser(username: string, pin: string) {
+    return new Promise((resolve, reject) => {
+      this.dao
+        .run(
+          `
+          INSERT INTO users
+                      (username,
+                       pin,
+                       created_date)
+          VALUES      (?,
+                       ?,
+                       Date('now')); 
+          `,
+          [username, pin]
+        )
+        .then(() => {
+          resolve();
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
 }
