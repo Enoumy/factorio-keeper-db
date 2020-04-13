@@ -23,28 +23,4 @@ export default class ImageDao {
         });
     });
   }
-
-  writeImage(blueprint_id: number, type: string, buffer: any) {
-    return new Promise((resolve, reject) => {
-      this.dao
-        .run(
-          `
-        INSERT INTO blueprintimages
-                    (b_id,
-                     content_type,
-                     image_blob)
-        VALUES      (?,
-                     ?,
-                     ?);
-        `,
-          [blueprint_id, type, buffer]
-        )
-        .then(() => {
-          resolve();
-        })
-        .catch(err => {
-          reject(err);
-        });
-    });
-  }
 }

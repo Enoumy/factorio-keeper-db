@@ -11,7 +11,7 @@ export default class BlueprintDao {
     return this.dao.open(filename);
   }
 
-  findMaxID() {
+  findMaxID(): Promise<number> {
     return new Promise((resolve, reject) => {
       this.dao
         .get("SELECT MAX(b_id) AS max from Blueprints;")
@@ -131,5 +131,54 @@ export default class BlueprintDao {
       `,
       [description, blueprint_id, created_by]
     );
+  }
+
+  findMaxImageID(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.dao
+        .get("SELECT MAX(image_id) AS max from BlueprintImages;")
+        .then(value => {
+          resolve(value["max"]);
+        })
+        .catch(err => {
+          resolve(0);
+        });
+    });
+  }
+
+  writeImage(
+    blueprint_id: number,
+    image_id: number,
+    type: string,
+    buffer: any
+  ) {
+    console.log(blueprint_id, type, buffer);
+    return new Promise((resolve, reject) => {
+      this.dao
+        .run(
+          `
+        INSERT INTO blueprintimages
+                    (b_id,
+                     image_id,
+                     content_type,
+                     image_blob)
+        VALUES      (?,
+                     ?,
+                     ?,
+                     ?);
+        `,
+          [blueprint_id, image_id, type, buffer]
+        )
+        .then(() => {
+          resolve();
+        })
+        .catch(err => {
+          reject(err);
+        });
+    });
+  }
+
+  transaction(commands) {
+    this.dao.transaction(commands);
   }
 }

@@ -81,12 +81,54 @@ app.get("/user/:username", async (req, res, next) => {
   res.end(JSON.stringify(data));
 });
 
-app.post("/upload", (req, res) => {
-  console.log(req.body);
+app.post("/upload", async (req, res, next) => {
+  console.log("POST /upload");
   for (let key in req.body.images) {
-    console.log(req.body.images[key]["buffer"]);
+    let arr = req.body.images[key]["buffer"];
+    let buffer = new Buffer(arr.length);
+    for (let i = 0; i < arr.length; i++) buffer[i] = arr[i];
+    req.body.images[key]["buffer"] = buffer;
   }
-  res.send("Received your request!");
+
+  let blueprint_dao = new BlueprintDao();
+
+  try {
+    await blueprint_dao.open(db_file);
+    await blueprint_dao.dao.run("BEGIN;");
+
+    let blueprint_id: number = await blueprint_dao.findMaxID();
+    blueprint_id++;
+
+    await blueprint_dao.writeBlueprint(
+      blueprint_id,
+      req.body.blueprint_string,
+      req.body.title
+    );
+
+    await blueprint_dao.writeBlueprintMetadata(
+      blueprint_id,
+      req.body.username,
+      req.body.description
+    );
+
+    for (let key in req.body.images) {
+      let image_id: number = await blueprint_dao.findMaxImageID();
+      image_id++;
+
+      await blueprint_dao.writeImage(
+        blueprint_id,
+        image_id,
+        req.body.images[key]["type"],
+        req.body.images[key]["buffer"]
+      );
+    }
+
+    await blueprint_dao.dao.run("COMMIT;");
+  } catch (error) {
+    await blueprint_dao.dao.run("ROLLBACK;");
+    console.log("Failed to write to db, aborting transaction");
+    next();
+  }
 });
 
 app.use(function(err, req, res, next) {
