@@ -111,6 +111,8 @@ app.post("/upload", async (req, res, next) => {
       req.body.description
     );
 
+    await blueprint_dao.writeOwnership(blueprint_id, req.body.username);
+
     for (let key in req.body.images) {
       let image_id: number = await blueprint_dao.findMaxImageID();
       image_id++;

@@ -178,6 +178,13 @@ export default class BlueprintDao {
     });
   }
 
+  writeOwnership(blueprint_id: number, username: string) {
+    return this.dao.run("INSERT INTO owns (b_id, username) VALUES (?, ?);", [
+      blueprint_id,
+      username
+    ]);
+  }
+
   transaction(commands) {
     this.dao.transaction(commands);
   }
