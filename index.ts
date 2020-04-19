@@ -10,6 +10,7 @@ import BlueprintDao from "./dao/blueprint-dao";
 import ImageDao from "./dao/image-dao";
 import UserDao from "./dao/user-dao";
 import validateUser from "./validate-user";
+import validateData from "./validate-data";
 
 const db_file = "test.db";
 
@@ -97,10 +98,17 @@ app.post("/upload", async (req, res, next) => {
     await blueprint_dao.open(db_file);
     await blueprint_dao.dao.run("BEGIN;");
 
+    if (!validateData(req.body.title, req.body.blueprint_string)) {
+      await blueprint_dao.dao.run("ROLLBACK;");
+      console.log("Failed to write to db, aborting transaction");
+      res.status(400).send("Invalid form data");
+      return;
+    }
+
     if (!(await validateUser(req.body.username, req.body.pin, db_file))) {
       await blueprint_dao.dao.run("ROLLBACK;");
       console.log("Failed to write to db, aborting transaction");
-      res.status(403).send("Write access denied for " + req.body.username);
+      res.status(401).send("Write access denied for " + req.body.username);
       return;
     }
 
