@@ -11,18 +11,12 @@ CREATE TABLE IF NOT EXISTS  Blueprints
   b_id INT NOT NULL,
   blueprint_string VARCHAR(32768) NOT NULL,
   title VARCHAR(128) NOT NULL,
-  PRIMARY KEY (b_id)
-);
-
-CREATE TABLE IF NOT EXISTS  BlueprintMetadata
-(
+  created_by VARCHAR(64) NOT NULL,
   created_date DATE NOT NULL,
   description VARCHAR(512) NOT NULL,
-  b_id INT NOT NULL,
-  created_by VARCHAR(64) NOT NULL,
   PRIMARY KEY (b_id),
-  FOREIGN KEY (b_id) REFERENCES Blueprints(b_id),
   FOREIGN KEY (created_by) REFERENCES Users(username)
+
 );
 
 CREATE TABLE IF NOT EXISTS  BlueprintImages

@@ -56,10 +56,8 @@ export default class BlueprintDao {
         .get(
           `
         SELECT *
-        FROM   blueprints AS b,
-               blueprintmetadata AS d
-        WHERE  b.b_id = d.b_id
-               AND b.b_id = ?;
+        FROM   blueprints AS b
+        WHERE  b.b_id = ?;
         `,
           [blueprint_id]
         )
@@ -78,10 +76,8 @@ export default class BlueprintDao {
         .get(
           `
         SELECT b.b_id, title, created_date, description, created_by
-        FROM   blueprints AS b,
-               blueprintmetadata AS d
-        WHERE  b.b_id = d.b_id
-               AND b.b_id = ?;
+        FROM   blueprints AS b
+        WHERE  b.b_id = ?;
         `,
           [blueprint_id]
         )
@@ -97,39 +93,26 @@ export default class BlueprintDao {
   writeBlueprint(
     blueprint_id: number,
     blueprint_string: string,
-    title: string
+    title: string,
+    description: string,
+    created_by: string
   ) {
     return this.dao.run(
       `
       INSERT INTO blueprints
                   (b_id,
                    blueprint_string,
-                   title)
+                   title,
+                   created_date,
+                   description,
+                   created_by)
       VALUES      (?,
                    ?,
+                   ?,
+                   Date('now'),
+                   ?,
                    ?); `,
-      [blueprint_id, blueprint_string, title]
-    );
-  }
-
-  writeBlueprintMetadata(
-    blueprint_id: number,
-    created_by: string,
-    description: string
-  ) {
-    return this.dao.run(
-      `
-      INSERT INTO blueprintmetadata
-                  (created_date,
-                   description,
-                   b_id,
-                   created_by)
-      VALUES      (Date('now'),
-                   ?,
-                   ?,
-                   ?);
-      `,
-      [description, blueprint_id, created_by]
+      [blueprint_id, blueprint_string, title, description, created_by]
     );
   }
 

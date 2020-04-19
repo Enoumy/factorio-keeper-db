@@ -102,13 +102,9 @@ app.post("/upload", async (req, res, next) => {
     await blueprint_dao.writeBlueprint(
       blueprint_id,
       req.body.blueprint_string,
-      req.body.title
-    );
-
-    await blueprint_dao.writeBlueprintMetadata(
-      blueprint_id,
-      req.body.username,
-      req.body.description
+      req.body.title,
+      req.body.description,
+      req.body.username
     );
 
     await blueprint_dao.writeOwnership(blueprint_id, req.body.username);
