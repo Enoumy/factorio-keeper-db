@@ -1,5 +1,6 @@
 import BlueprintDao from "./dao/blueprint-dao";
 import UserDao from "./dao/user-dao";
+import validateUser from "./validate-user";
 
 const db_file = "test.db";
 
@@ -68,6 +69,11 @@ async function findUserData() {
   }
 }
 
+async function validateUserTest() {
+  console.log(await validateUser("enoumy", "123", "test.db"));
+  console.log(await validateUser("ads", "321", "test.db"));
+}
+
 async function main() {
   await findMax();
   await findImages();
@@ -75,6 +81,10 @@ async function main() {
   await findBlueprintMetaData();
   await findUserBlueprints();
   await findUserData();
+
+  console.log("Validation:");
+  await validateUserTest();
+
   console.log("End of transmission. Don't panic!");
 }
 
