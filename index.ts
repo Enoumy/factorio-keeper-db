@@ -143,6 +143,57 @@ app.post("/upload", async (req, res, next) => {
     console.log("Failed to write to db, aborting transaction");
     next();
   }
+
+  res.sendStatus(200);
+});
+
+app.get("/blueprints", async (req, res, next) => {
+  console.log("GET /blueprints");
+  let blueprint_dao: BlueprintDao = new BlueprintDao();
+
+  let data: any = [];
+  try {
+    await blueprint_dao.open(db_file);
+    data = await blueprint_dao.getBlueprintIDs();
+  } catch (error) {
+    console.log("Failed to retrieve all blueprints");
+    next();
+  }
+
+  res.contentType("application/json");
+  res.end(JSON.stringify(data));
+});
+
+app.post("/own", async (req, res, next) => {
+  console.log("POST /own");
+  console.log(req.body);
+
+  let blueprint_dao: BlueprintDao = new BlueprintDao();
+
+  try {
+    await blueprint_dao.open(db_file);
+    await blueprint_dao.dao.run("BEGIN;");
+
+    if (!(await validateUser(req.body.username, req.body.pin, db_file))) {
+      await blueprint_dao.dao.run("ROLLBACK;");
+      console.log("Failed to write to db, aborting transaction");
+      res.status(401).send("Write access denied for " + req.body.username);
+      return;
+    }
+
+    await blueprint_dao.writeOwnership(
+      req.body.blueprint_id,
+      req.body.username
+    );
+
+    await blueprint_dao.dao.run("COMMIT;");
+  } catch (error) {
+    await blueprint_dao.dao.run("ROLLBACK;");
+    console.log("Failed to write to db, aborting transaction");
+    next();
+  }
+
+  res.sendStatus(200);
 });
 
 app.use(function(err, req, res, next) {

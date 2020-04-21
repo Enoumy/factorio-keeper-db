@@ -168,6 +168,15 @@ export default class BlueprintDao {
     ]);
   }
 
+  async getBlueprintIDs() {
+    let results: any = await this.dao.all(
+      "SELECT b_id FROM blueprints ORDER BY b_id DESC"
+    );
+    let out: number[] = [];
+    for (let i = 0; i < results.length; i++) out.push(results[i]["b_id"]);
+    return out;
+  }
+
   transaction(commands) {
     this.dao.transaction(commands);
   }
