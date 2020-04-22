@@ -177,6 +177,22 @@ export default class BlueprintDao {
     return out;
   }
 
+  async getBlueprintStrings(blueprint_ids: number[]) {
+    let results: any = await this.dao.all(
+      `
+      SELECT blueprint_string
+      FROM Blueprints
+      WHERE b_id IN (` +
+        blueprint_ids.map(() => "?").join(",") +
+        ")",
+      blueprint_ids
+    );
+    for (let i = 0; i < results.length; i++) {
+      results[i] = results[i]["blueprint_string"];
+    }
+    return results;
+  }
+
   transaction(commands) {
     this.dao.transaction(commands);
   }

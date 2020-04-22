@@ -196,6 +196,28 @@ app.post("/own", async (req, res, next) => {
   res.sendStatus(200);
 });
 
+app.get("/blueprint_strings", async (req, res, next) => {
+  console.log("GET /blueprint_ids");
+  console.log(req.query);
+
+  let blueprint_ids = req.query.blueprint_ids.split(",");
+  for (let i = 0; i < blueprint_ids.length; i++) {
+    blueprint_ids[i] = parseInt(blueprint_ids[i]);
+  }
+  console.log(blueprint_ids);
+
+  let data = [];
+
+  let blueprint_dao: BlueprintDao = new BlueprintDao();
+  try {
+    await blueprint_dao.open(db_file);
+    data = await blueprint_dao.getBlueprintStrings(blueprint_ids);
+  } catch (error) {}
+
+  res.contentType("application/json");
+  res.end(JSON.stringify(data));
+});
+
 app.use(function(err, req, res, next) {
   console.error(err.stack);
   res.status(404).send("Not found!");
