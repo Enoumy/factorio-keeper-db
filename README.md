@@ -79,3 +79,16 @@ the database directly. It's API consists of the following routes:
 | GET  | /blueprint_strings               | Given an array of blueprint ids as query parameters, returns the blueprint strings.                       |
 | POST | /upload                          | Uploads a new blueprint given the blueprint string, images, and metadata about the blueprint and user.    |
 | POST | /own                             | Adds a new blueprint to a user's profile.                                                                 |
+
+## Factorio Blueprint Keeper Frontend
+
+This backend server only deals with the storage and inner workings of the
+project. What the users interact with graphically is a front-end client built
+using [Angular](https://angular.io/).
+
+> The backend server can work on its own without the frontend, but the frontend
+> needs this backend server to talk to in order to retrieve and store blueprints.
+
+You can setup the front-end angular server at this repository:
+
+`https://github.com/Enoumy/factorio-keeper-ui`
