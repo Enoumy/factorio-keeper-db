@@ -13,16 +13,16 @@ factory. However, all the blueprints in your game are local to your machine.
 
 ![Factorio background](https://hb.imgix.net/cb5424b775d4a6ac28320eb5b30dcc7b97963185.jpg?auto=compress,format&fit=crop&h=353&w=616&s=cf3e481fa618c41377308a1ecd902e1d)
 
-**Factorio Blueprint Keeper** allows users to post their own blueprints and download
-all of their blueprints in one go in the form of a blueprint book string that
-users can copy paste directly into their games!
+**Factorio Blueprint Keeper** allows users to post their own blueprints and
+download all of their blueprints in one go in the form of a blueprint book string
+that users can copy paste directly into their games!
 
 ## Installation
 
 In order to install this backend server you need to install
 [git](https://git-scm.com/) and [node npm](https://nodejs.org/en/).
 
-You must first clone this repository by with:
+You must first clone this repository with:
 
 ```bash
 $ git clone https://github.com/Enoumy/factorio-keeper-db.git
