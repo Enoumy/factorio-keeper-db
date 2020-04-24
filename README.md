@@ -89,6 +89,4 @@ using [Angular](https://angular.io/).
 > The backend server can work on its own without the frontend, but the frontend
 > needs this backend server to talk to in order to retrieve and store blueprints.
 
-You can setup the front-end angular server at this repository:
-
-`https://github.com/Enoumy/factorio-keeper-ui`
+You can setup the front-end angular server at this repository: [enoumy/factorio-keeper-ui](https://github.com/Enoumy/factorio-keeper-ui)
