@@ -6,7 +6,7 @@ export default class AppDao {
   constructor() {}
 
   open(filename: string) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.db = new sqlite3.Database(filename, err => {
         if (err) {
           console.log("Error opening database: " + filename);
@@ -20,7 +20,7 @@ export default class AppDao {
   }
 
   run(sql: string, params: any[] = []) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.db.run(sql, params, err => {
         if (err) {
           console.log("Error running sql " + sql);

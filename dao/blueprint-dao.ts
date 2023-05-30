@@ -136,7 +136,7 @@ export default class BlueprintDao {
     buffer: any
   ) {
     console.log(blueprint_id, type, buffer);
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.dao
         .run(
           `

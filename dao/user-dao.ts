@@ -81,7 +81,7 @@ export default class UserDao {
   }
 
   writeUser(username: string, pin: string) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.dao
         .run(
           `
